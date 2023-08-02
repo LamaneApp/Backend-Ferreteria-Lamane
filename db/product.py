@@ -12,6 +12,12 @@ def get(id: str, db: Session):
     if producto is None:
         raise HTTPException(status_code=400, detail="The product does not exist.")
     return producto
+
+def get_by_supplier(proveedor:str,db:Session):
+    productos_proveedor = db.query(Productos).filter(Productos.proveedor == proveedor).all()
+    if productos_proveedor == []:
+        raise HTTPException(status_code=404, detail="The supplier is not found.")
+    return productos_proveedor
     
 
 def create(producto: Producto, db: Session):
@@ -23,6 +29,9 @@ def create(producto: Producto, db: Session):
                          costo=producto.costo,
                          stock=producto.stock)
     db.add(producto)
+    for producto_i in db:
+        if(producto.id == producto_i):
+            raise HTTPException(status_code=204, detail="The product already exists.")
     db.commit() #--> esto es para actualizar la base manualmente por si hay algun problema
     return {"detail": "The product create successfully"}
 

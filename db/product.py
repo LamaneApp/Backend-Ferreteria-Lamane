@@ -9,8 +9,8 @@ def get_all(db: Session):
 
 def get(id: str, db: Session):
     producto = db.query(Productos).filter(Productos.id == id).first()
-    if producto is None:
-        raise HTTPException(status_code=400, detail="The product does not exist.")
+    #if producto is None:
+    #    raise HTTPException(status_code=400, detail="The product does not exist.")
     return producto
 
 def get_by_supplier(proveedor:str,db:Session):
@@ -26,18 +26,17 @@ def get_by_supplier_id(codigo_proveedor:str, db:Session):
     return productos
 
 def create(producto: Producto, db: Session):
+    if get(producto.id,db) is not None:
+        raise HTTPException(status_code=204, detail="The product already exists.")
     producto = Productos(id=producto.id,
                          descripcion=producto.descripcion,
                          proveedor=producto.proveedor,
-                         precio=(producto.costo)*1.5,
+                         precio=producto.precio,
                          codigo_proveedor=producto.codigo_proveedor,
                          costo=producto.costo,
                          stock=producto.stock)
     db.add(producto)
-    for producto_i in db:
-        if(producto.id == producto_i):
-            raise HTTPException(status_code=204, detail="The product already exists.")
-    db.commit() #--> esto es para actualizar la base manualmente por si hay algun problema
+    db.commit() 
     return {"detail": "The product create successfully"}
 
 def update(producto: ProductoUpdate, db:Session):

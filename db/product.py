@@ -24,7 +24,7 @@ def create(producto: Producto, db: Session):
     producto = Productos(id=producto.id,
                          descripcion=producto.descripcion,
                          proveedor=producto.proveedor,
-                         precio=producto.precio,
+                         precio=(producto.costo)*1.5,
                          codigo_proveedor=producto.codigo_proveedor,
                          costo=producto.costo,
                          stock=producto.stock)

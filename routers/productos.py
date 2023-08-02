@@ -14,7 +14,7 @@ file = "c:/Users/laura/OneDrive/Escritorio/Ferreteria/Backend/STOCK_FERRETERIA.x
 def lectura(db: Session = Depends(get_db)):
     data = pd.read_excel("c:/Users/laura/OneDrive/Escritorio/Ferreteria/Backend/STOCK_FERRETERIA.xlsb",sheet_name="LISTA NUESTRA DE PRECIOS",header=0)
     data = data.dropna(axis=0)
-    for row in range(100): ###--> cuando modifique el archivo (cambiar los articulos que son identicos), entonces hacer range(len(data)) en vez de 100
+    for row in range(500): ###--> cuando modifique el archivo (cambiar los articulos que son identicos), entonces hacer range(len(data)) en vez de 100
         product.create(Producto(id=data.iloc[row]['ARTICULO'],
                                 descripcion=data.iloc[row]['DESCRIPCION'],
                                 proveedor=data.iloc[row]['PROVEEDOR'],
@@ -44,4 +44,8 @@ def update_product(producto: ProductoUpdate, db:Session=Depends(get_db)):
 def delete():
     with engine.connect() as c:
         c.execute(text("DROP TABLE productos"))
+        
+@router_product.delete("/eliminarProducto/{id}")
+def delete_product(id:str, db:Session=Depends(get_db)):
+    return product.delete(id,db)
         

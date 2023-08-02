@@ -6,7 +6,7 @@ class Producto(BaseModel):
     descripcion: str
     proveedor: str
     precio: float
-    codigo_proveedor: str
+    codigo_proveedor: Optional[str]=None
     costo: float
     stock: int
     

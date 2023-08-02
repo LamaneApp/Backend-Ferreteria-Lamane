@@ -8,7 +8,11 @@ def get_all(db: Session):
     return db.query(Productos).all()
 
 def get(id: str, db: Session):
-    return db.query(Productos).filter(Productos.id == id).first()
+    producto = db.query(Productos).filter(Productos.id == id).first()
+    if producto is None:
+        raise HTTPException(status_code=400, detail="The product does not exist.")
+    return producto
+    
 
 def create(producto: Producto, db: Session):
     producto = Productos(id=producto.id,
@@ -20,12 +24,22 @@ def create(producto: Producto, db: Session):
                          stock=producto.stock)
     db.add(producto)
     db.commit() #--> esto es para actualizar la base manualmente por si hay algun problema
-    return producto
+    return {"detail": "The product create successfully"}
 
 def update(producto: ProductoUpdate, db:Session):
     producto_db = db.query(Productos).filter(Productos.id == producto.id).first()
+    if producto_db is None:
+        raise HTTPException(status_code=400, detail="The product does not exist.")
     for key,value in producto.dict(exclude_none=True).items():
         setattr(producto_db,key,value)
     db.commit()
-    return producto
+    return {"detail": "The product update successfully"}
+
+def delete(id:str,db:Session):
+    producto_id = db.query(Productos).filter(Productos.id==id)
+    if producto_id is None:
+        raise HTTPException(status_code=400, detail="The product does not exist.")
+    producto_id.delete()
+    db.commit()
+    return {"detail": "The product delete successfully"}
     

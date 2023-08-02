@@ -41,6 +41,10 @@ def get_products_by_supplier(proveedor:str,db:Session=Depends(get_db)):
 def get_products_by_supplier_id(codigo_proveedor:str,db:Session=Depends(get_db)):
     return product.get_by_supplier_id(codigo_proveedor,db)
 
+@router_product.get('/get/productsByDescription/')
+def get_products_description(descripcion:str,db:Session=Depends(get_db)):
+    return product.get_by_description(descripcion,db)
+
 ###  POSTS  ###
 
 @router_product.post("/create",status_code=201)

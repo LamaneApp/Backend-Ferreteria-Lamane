@@ -25,6 +25,12 @@ def get_by_supplier_id(codigo_proveedor:str, db:Session):
         raise HTTPException(status_code=404, detail="The supplier's id is not found.")
     return productos
 
+def get_by_description(descripcion:str, db:Session):
+    productos = db.query(Productos).filter(Productos.descripcion.contains(descripcion)).all()
+    if productos == []:
+        raise HTTPException(status_code=404, detail="The description's part you supplied is not found.")
+    return productos
+
 def create(producto: Producto, db: Session):
     if get(producto.id,db) is not None:
         raise HTTPException(status_code=204, detail="The product already exists.")

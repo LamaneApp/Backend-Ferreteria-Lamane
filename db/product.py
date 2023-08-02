@@ -18,7 +18,12 @@ def get_by_supplier(proveedor:str,db:Session):
     if productos_proveedor == []:
         raise HTTPException(status_code=404, detail="The supplier is not found.")
     return productos_proveedor
-    
+
+def get_by_supplier_id(codigo_proveedor:str, db:Session):
+    productos = db.query(Productos).filter(Productos.codigo_proveedor == codigo_proveedor).all()
+    if productos == []:
+        raise HTTPException(status_code=404, detail="The supplier's id is not found.")
+    return productos
 
 def create(producto: Producto, db: Session):
     producto = Productos(id=producto.id,

@@ -1,10 +1,16 @@
 from fastapi import FastAPI
+import uvicorn
 from routers import productos
+from db.db import Base,engine
+
+def create_tables():
+    Base.metadata.create_all(bind=engine)
+    
+create_tables()
 
 app = FastAPI()
 
 app.include_router(productos.router_product)
 
-@app.get("/") #accedemos a app que la creamos en la linea 3. Obtenemos con get algo que esta en el lugar indicado en el corchete (en este caso solo /)
-async def root(): #asincrona porque asi le indicamos que haga lo que tenga que hacer cuando pueda
-    return "Hola FastAPI"
+if __name__=="__main__":
+    uvicorn.run("main:app",port=8080,reload=True)

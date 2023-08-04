@@ -11,7 +11,6 @@ router_product = APIRouter(prefix="/productos",tags=["productos"])
 
 ###  GETS  ###
 
-@router_product.get("/readFile")
 def lectura(db: Session = Depends(get_db)):
     data = pd.read_excel("c:/Users/laura/OneDrive/Escritorio/Ferreteria/Backend/STOCK_FERRETERIA.xlsb",sheet_name="LISTA NUESTRA DE PRECIOS",header=0)
     data = data.dropna(axis=0,thresh=5)
@@ -23,12 +22,12 @@ def lectura(db: Session = Depends(get_db)):
                                 codigo_proveedor=str(data.iloc[row]['ART. DISTRIBUIDOR']),
                                 costo=data.iloc[row]['P.UNITARIO'],
                                 stock=data.iloc[row]['STOCK']),db)
-    return len(data)
+    return product.get_all(db)
 
 
 @router_product.get("/getAll")
 def get_all_products(db:Session=Depends(get_db)):
-    return product.get_all(db)
+    return lectura(db)
 
 @router_product.get("/get/{id}")
 def get_product(id:str,db:Session=Depends(get_db)):

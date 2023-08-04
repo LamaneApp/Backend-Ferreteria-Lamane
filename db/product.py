@@ -4,14 +4,15 @@ from sqlalchemy.orm import Session
 from models.productos import Productos
 from schemas.productos_schema import Producto,ProductoUpdate
 
+### GETS
 
 def get_all(db: Session):
     return db.query(Productos).all()
 
 def get(id: str, db: Session):
     producto = db.query(Productos).filter(Productos.id == id).first()
-    #if producto is None:
-    #    raise HTTPException(status_code=400, detail="The product does not exist.")
+    if producto is None:
+        raise HTTPException(status_code=400, detail="The product does not exist.")
     return producto
 
 def get_by_supplier(proveedor:str,db:Session):
@@ -41,9 +42,11 @@ def get_by_(informacion:str, db:Session):
         raise HTTPException(status_code=404, detail="The information's part you supplied is not found.")
     return productos 
 
+### POSTS 
+
 def create(producto: Producto, db: Session):
-    """if get(producto.id,db) is not None:
-        raise HTTPException(status_code=204, detail="The product already exists.")"""
+    if get(producto.id,db) is not None:
+        raise HTTPException(status_code=204, detail="The product already exists.")
     producto = Productos(id=producto.id,
                          descripcion=producto.descripcion,
                          proveedor=producto.proveedor,
@@ -55,6 +58,8 @@ def create(producto: Producto, db: Session):
     db.commit() 
     return {"detail": "The product create successfully"}
 
+### PUTS
+
 def update(producto: ProductoUpdate, db:Session):
     producto_db = db.query(Productos).filter(Productos.id == producto.id).first()
     if producto_db is None:
@@ -63,6 +68,8 @@ def update(producto: ProductoUpdate, db:Session):
         setattr(producto_db,key,value)
     db.commit()
     return {"detail": "The product update successfully"}
+
+### DELETES
 
 def delete(id:str,db:Session):
     producto_id = db.query(Productos).filter(Productos.id==id)

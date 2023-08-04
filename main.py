@@ -12,5 +12,5 @@ app = FastAPI()
 
 app.include_router(productos.router_product)
 
-if __name__=="__main__":
-    uvicorn.run("main:app",port=8080,reload=True)
+"""if __name__=="__main__":
+    uvicorn.run("main:app",port=8080,reload=True)"""

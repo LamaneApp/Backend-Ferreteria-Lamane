@@ -6,7 +6,6 @@ import pandas as pd
 from db import product
 from sqlalchemy import text
 
-Base.metadata.create_all(bind=engine)
 router_product = APIRouter(prefix="/productos",tags=["productos"])
 
 ###  GETS  ###
@@ -15,7 +14,7 @@ router_product = APIRouter(prefix="/productos",tags=["productos"])
 def lectura(db: Session = Depends(get_db)):
     data = pd.read_excel("c:/Users/laura/OneDrive/Escritorio/Ferreteria/Backend/STOCK_FERRETERIA.xlsb",sheet_name="LISTA NUESTRA DE PRECIOS",header=0)
     data = data.dropna(axis=0,thresh=5)
-    for row in range(len(data)): ###--> cuando modifique el archivo (cambiar los articulos que son identicos), entonces hacer range(len(data)) en vez de 100
+    for row in range(200): ###--> cuando modifique el archivo (cambiar los articulos que son identicos), entonces hacer range(len(data)) en vez de 100
         product.create(Producto(id=data.iloc[row]['ARTICULO'],
                                 descripcion=data.iloc[row]['DESCRIPCION'],
                                 proveedor=data.iloc[row]['PROVEEDOR'],

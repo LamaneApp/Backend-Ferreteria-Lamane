@@ -32,8 +32,8 @@ def get_by_description(descripcion:str, db:Session):
     return productos
 
 def create(producto: Producto, db: Session):
-    if get(producto.id,db) is not None:
-        raise HTTPException(status_code=204, detail="The product already exists.")
+    """if get(producto.id,db) is not None:
+        raise HTTPException(status_code=204, detail="The product already exists.")"""
     producto = Productos(id=producto.id,
                          descripcion=producto.descripcion,
                          proveedor=producto.proveedor,

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from db.db import Base, get_db,engine
+from models.productos import Productos
 from schemas.productos_schema import Producto,ProductoUpdate
 import pandas as pd
 from db import product
@@ -14,15 +15,16 @@ router_product = APIRouter(prefix="/productos",tags=["productos"])
 def lectura(db: Session = Depends(get_db)):
     data = pd.read_excel("c:/Users/laura/OneDrive/Escritorio/Ferreteria/Backend/STOCK_FERRETERIA.xlsb",sheet_name="LISTA NUESTRA DE PRECIOS",header=0)
     data = data.dropna(axis=0,thresh=5)
-    for row in range(200): ###--> cuando modifique el archivo (cambiar los articulos que son identicos), entonces hacer range(len(data)) en vez de 100
+    for row in range(len(data)): ###--> cuando modifique el archivo (cambiar los articulos que son identicos), entonces hacer range(len(data)) en vez de 100
         product.create(Producto(id=data.iloc[row]['ARTICULO'],
                                 descripcion=data.iloc[row]['DESCRIPCION'],
-                                proveedor=data.iloc[row]['PROVEEDOR'],
+                                proveedor=str(data.iloc[row]['PROVEEDOR']),
                                 precio=data.iloc[row]['P. EFECTIVO'],
                                 codigo_proveedor=str(data.iloc[row]['ART. DISTRIBUIDOR']),
                                 costo=data.iloc[row]['P.UNITARIO'],
                                 stock=data.iloc[row]['STOCK']),db)
     return len(data)
+
 
 @router_product.get("/getAll")
 def get_all_products(db:Session=Depends(get_db)):

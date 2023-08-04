@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from models.productos import Productos
 from schemas.productos_schema import Producto,ProductoUpdate
@@ -30,6 +31,15 @@ def get_by_description(descripcion:str, db:Session):
     if productos == []:
         raise HTTPException(status_code=404, detail="The description's part you supplied is not found.")
     return productos
+
+def get_by_(informacion:str, db:Session):
+    productos = db.query(Productos).filter(or_((Productos.id.contains(informacion)),
+                                               (Productos.descripcion.contains(informacion)),
+                                               (Productos.proveedor.contains(informacion)),
+                                               (Productos.codigo_proveedor.contains(informacion)))).all()
+    if productos == []:
+        raise HTTPException(status_code=404, detail="The information's part you supplied is not found.")
+    return productos 
 
 def create(producto: Producto, db: Session):
     """if get(producto.id,db) is not None:
